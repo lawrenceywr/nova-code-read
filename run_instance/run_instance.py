@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time    : 2017/5/27 17:31
+# @Author  : LawrenceYang
+# @Site    : 
+# @File    : run_instance.py
+# @Software: PyCharm
+
 创建虚拟机的源码分析
 
 CLI
@@ -20,16 +28,18 @@ nova boot --flavor 2 --image 226bc6e5-60d7-4a2c-bf0d-a568a1e26e00 vm2
         strategy being performed and schedule the instance(s) for
         creation.
         """
+        """定义一个create_instance的私有方法，规定传进哪些参数
+        """
 
         # Normalize and setup some parameters
         if reservation_id is None:
-            reservation_id = utils.generate_uid('r')
+            reservation_id = utils.generate_uid('r')       #如果没有UUID则调用nova/utils.py中generate_uid方法生成一个UUID
         security_groups = security_groups or ['default']
         min_count = min_count or 1
         max_count = max_count or min_count
         block_device_mapping = block_device_mapping or []
         if not instance_type:
-            instance_type = flavors.get_default_flavor()
+            instance_type = flavors.get_default_flavor()   #从配置文件中读取默认flavor
 
         if image_href:
             image_id, boot_meta = self._get_image(context, image_href)
