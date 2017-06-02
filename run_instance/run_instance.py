@@ -62,7 +62,7 @@ nova boot --flavor 2 --image 226bc6e5-60d7-4a2c-bf0d-a568a1e26e00 vm2
         availability_zone, forced_host, forced_node = handle_az(context,
                                                             availability_zone)
 
-        #根据输入参数，生成主机的配置，并且对一些参数进行验证，有异常则抛出
+        # 根据输入参数，生成主机的配置，并且对一些参数进行验证，有异常则抛出
         base_options, max_net_count = self._validate_and_build_base_options(
                 context,
                 instance_type, boot_meta, image_href, image_id, kernel_id,
@@ -76,6 +76,7 @@ nova boot --flavor 2 --image 226bc6e5-60d7-4a2c-bf0d-a568a1e26e00 vm2
         # max_net_count is the maximum number of instances requested by the
         # user adjusted for any network quota constraints, including
         # consideration of connections to each requested network
+        #
         if max_net_count == 0:
             raise exception.PortLimitExceeded()
         elif max_net_count < max_count:
@@ -89,10 +90,11 @@ nova boot --flavor 2 --image 226bc6e5-60d7-4a2c-bf0d-a568a1e26e00 vm2
             base_options, boot_meta, min_count, max_count,
             block_device_mapping, legacy_bdm)
 
+        # 创建虚拟机对象，并写入数据库
         instances = self._provision_instances(context, instance_type,
                 min_count, max_count, base_options, boot_meta, security_groups,
                 block_device_mapping)
-
+        # scheduler需要用的过滤选项
         filter_properties = self._build_filter_properties(context,
                 scheduler_hints, forced_host, forced_node, instance_type)
 
@@ -100,6 +102,7 @@ nova boot --flavor 2 --image 226bc6e5-60d7-4a2c-bf0d-a568a1e26e00 vm2
         #14060857 add for relative group scheduler hints
         self._update_instance_relative_group(context, instances, scheduler_hints)
 
+        # 将数据库中的实例状态设置为start
         for instance in instances:
             self._record_action_start(context, instance,
                                       instance_actions.CREATE)
